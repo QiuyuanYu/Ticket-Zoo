@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ticket Zoo — Make your own ticket</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap');
+:root{--bg:#003c39;--panel:#064b47;--panel2:#075650;--lime:#d8ff42;--cream:#fff7e8;--ink:#153d36;--muted:#a5ceca;--cyan:#65e7e9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#b6f8d5 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(to bottom,black,transparent 70%)}
+header{height:90px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:relative;z-index:2}
+.logo{font:700 30px Fredoka,sans-serif;letter-spacing:-1px;display:flex;align-items:center;gap:12px}.logo-icon{width:46px;height:46px;border:3px dashed var(--lime);border-radius:8px;display:grid;place-items:center;font-size:26px;transform:rotate(-5deg)}
+nav{display:flex;gap:clamp(20px,5vw,72px);font-weight:700}nav a{color:var(--cream);text-decoration:none;opacity:.9}nav a:hover{color:var(--lime)}
+.pill{background:var(--lime);color:#123c35;border:0;border-radius:999px;padding:15px 24px;font:700 16px 'DM Sans';cursor:pointer;box-shadow:0 5px 0 #91b822;transition:.18s}.pill:hover{transform:translateY(-2px);box-shadow:0 7px 0 #91b822}.pill:active{transform:translateY(2px);box-shadow:0 2px 0 #91b822}
+main{max-width:1440px;margin:auto;padding:30px 5vw 70px}.hero{display:grid;grid-template-columns:.9fr 1.1fr;gap:42px;align-items:center}
+h1{font:700 clamp(38px,5vw,66px)/.98 Fredoka,sans-serif;margin:0 0 22px;letter-spacing:-1.8px}h1 span{color:var(--lime);display:block}.intro{font-size:18px;line-height:1.6;color:#d4eeea;max-width:500px;margin-bottom:25px}
+.upload{border:1px solid #148b80;background:linear-gradient(145deg,#064b47,#03413e);border-radius:24px;padding:14px;box-shadow:0 12px 0 #00312f}
+.drop{min-height:205px;border:2px dashed #49c9c2;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column;padding:25px;cursor:pointer;transition:.2s}.drop.drag{background:#0b625c;transform:scale(.99)}.upload-icon{font-size:42px;color:var(--cyan);margin-bottom:8px}.drop strong{font-size:18px}.drop small{color:#9bd8d4;margin-top:7px}.privacy{font-size:13px;color:#9bcac5;text-align:center;margin:13px 0 3px}
+.preview-wrap{position:relative;padding:8px 0 20px}.preview-wrap:before,.preview-wrap:after{content:"✳";position:absolute;color:var(--lime);font-size:40px;right:0;top:-22px;transform:rotate(15deg)}.preview-wrap:after{content:"✳";right:5px;top:auto;bottom:0;font-size:27px}
+.ticket{display:grid;grid-template-columns:1.6fr .95fr;min-height:290px;background:var(--cream);color:var(--ink);border-radius:8px;overflow:hidden;box-shadow:0 20px 0 rgba(0,0,0,.16);transform:rotate(1deg);transition:transform .35s;position:relative}.ticket:hover{transform:rotate(0deg) translateY(-4px)}
+.ticket-art{position:relative;min-height:290px;background:linear-gradient(135deg,#70e7ed,#1da9c5 55%,#e5f75a);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ticket-art:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,#c6ef45 0 10%,transparent 32%),radial-gradient(ellipse at 90% 10%,#ffdc57 0 12%,transparent 35%),linear-gradient(0deg,rgba(0,81,77,.3),transparent 50%)}
+.ticket-art img{position:absolute;width:100%;height:100%;object-fit:cover;mix-blend-mode:normal}.art-emoji{font-size:clamp(110px,17vw,220px);filter:drop-shadow(8px 10px 0 rgba(0,69,77,.18));z-index:1;line-height:1}
+.art-label{position:absolute;z-index:2;left:20px;top:15px;font:700 13px Fredoka,sans-serif;letter-spacing:1.5px;background:var(--lime);padding:7px 11px;border-radius:99px;color:#17443b}
+.ticket-info{padding:24px 22px;display:flex;flex-direction:column;position:relative;background:#fff8e9;border-left:2px dashed #0b625c}.ticket-info:before,.ticket-info:after{content:"";position:absolute;left:-11px;width:20px;height:20px;border-radius:50%;background:var(--bg)}.ticket-info:before{top:-10px}.ticket-info:after{bottom:-10px}
+.ticket-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.ticket-top h2{font:700 clamp(20px,2.2vw,31px)/1 Fredoka;margin:0}.price{font:700 24px Fredoka;color:#16824e}.admission{font:700 16px;color:#289a68;margin:8px 0 13px}.rule{height:1px;background:#c6c4b8;margin-bottom:12px}.details{font-size:11px;line-height:1.5;color:#4d625b}.valid{font:500 18px Fredoka;margin:13px 0 15px}.barcode{height:48px;margin-top:auto;background:repeating-linear-gradient(90deg,#183e37 0 2px,transparent 2px 4px,#183e37 4px 5px,transparent 5px 8px,#183e37 8px 12px,transparent 12px 14px);border:5px solid #fff8e9}
+.controls{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:28px;background:#064b47;border:1px solid #137f77;border-radius:22px;padding:16px 20px;box-shadow:0 8px 0 #00312f}.control-group{display:flex;align-items:center;gap:9px}.control-label{font-weight:700;font-size:14px;margin-right:4px}.choice{border:1px solid #0b7169;background:#075650;color:#d8f1ed;border-radius:99px;padding:11px 14px;font-weight:700;cursor:pointer}.choice.active{background:var(--lime);color:#123c35;border-color:var(--lime)}.swatch{width:27px;height:27px;border:2px solid #ffffff55;border-radius:50%;cursor:pointer}.swatch.active{outline:3px solid var(--lime);outline-offset:3px}.divider{height:40px;width:1px;background:#25857d;margin:0 4px}.controls .pill{margin-left:auto;padding:13px 19px}
+.editors{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.field{display:flex;flex-direction:column;gap:7px;color:#b7dfda;font-size:13px;font-weight:700}.field input,.field select{width:100%;border:1px solid #147b72;background:#034440;color:#fff7e8;border-radius:12px;padding:12px 14px;font:500 15px 'DM Sans';outline:none}.field input:focus,.field select:focus{border-color:var(--lime)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin:100px 0 30px}.step{padding:20px 25px;border-right:1px solid #17645e;display:flex;gap:16px}.step:last-child{border:0}.num{flex:0 0 42px;height:42px;border-radius:50%;background:var(--lime);color:#16443b;display:grid;place-items:center;font:700 22px Fredoka}.step h3{font:700 21px Fredoka;margin:4px 0 8px}.step p{color:#b9ded9;line-height:1.55;font-size:14px;margin:0}
+footer{text-align:center;color:#7fb6b0;padding:20px;font-size:13px}
+#file{display:none}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--lime);color:#123c35;padding:13px 22px;border-radius:99px;font-weight:700;z-index:10;transition:.3s;box-shadow:0 5px 20px #001f1d55}.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){header{padding:0 5vw}.hero{grid-template-columns:1fr;gap:30px}.preview-wrap{order:-1}.ticket{min-height:240px}.ticket-art{min-height:240px}.steps{margin-top:60px}.controls .pill{margin-left:0}.divider{display:none}}
+@media(max-width:600px){header{height:75px}.logo{font-size:22px}.logo-icon{width:38px;height:38px;font-size:20px}nav{display:none}header>.pill{padding:11px 15px;font-size:13px}main{padding-top:20px}.intro{font-size:16px}.ticket{grid-template-columns:1.1fr .9fr;min-height:210px}.ticket-art{min-height:210px}.ticket-info{padding:17px 13px}.ticket-top h2{font-size:19px}.price{font-size:19px}.admission{font-size:13px;margin:6px 0 9px}.details{font-size:9px}.valid{font-size:15px;margin:10px 0}.barcode{height:36px}.controls{gap:12px;padding:14px}.control-group{flex-wrap:wrap}.control-label{width:100%}.choice{padding:9px 12px;font-size:13px}.steps{grid-template-columns:1fr;gap:10px;margin-top:50px}.step{border-right:0;border-bottom:1px solid #17645e;padding:15px 5px}.editors{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><div class="logo-icon">🦊</div> TICKET ZOO</div>
+  <nav><a href="#how">How it works</a><a href="#make">Make a ticket</a><a href="#about">About</a></nav>
+  <button class="pill" onclick="document.getElementById('make').scrollIntoView({behavior:'smooth'})">Make my ticket&nbsp; →</button>
+</header>
+<main>
+  <section class="hero" id="make">
+    <div>
+      <h1>Turn your photo into a <span>wild little ticket.</span></h1>
+      <p class="intro">Upload a photo. Pick your animal world. Get a one-of-a-kind zoo ticket starring your favorite face, pet, or anything you love.</p>
+      <div class="upload">
+        <div class="drop" id="drop">
+          <div class="upload-icon">⇧</div><strong>Drop your photo here</strong><small>or browse files · JPG, PNG, WEBP</small>
+          <input id="file" type="file" accept="image/*">
+        </div>
+        <div class="privacy">♙ Your photo stays in your browser. Nothing is uploaded.</div>
+      </div>
+      <div class="editors">
+        <label class="field">Ticket title<input id="titleInput" maxlength="28" value="Wildlife Park"></label>
+        <label class="field">Admission type<select id="admissionInput"><option>General Admission</option><option>VIP Explorer Pass</option><option>Junior Ranger</option><option>One Wild Adventure</option></select></label>
+        <label class="field">Ticket price<input id="priceInput" maxlength="8" value="$14"></label>
+        <label class="field">Valid date<input id="dateInput" type="date" value="2026-12-31"></label>
+      </div>
+    </div>
+    <div>
+      <div class="preview-wrap">
+        <div class="ticket" id="ticket">
+          <div class="ticket-art" id="ticketArt">
+            <div class="art-label" id="styleLabel">TICKET ZOO · ORIGINAL</div>
+            <div class="art-emoji" id="emoji">🐘</div>
+          </div>
+          <div class="ticket-info">
+            <div class="ticket-top"><h2 id="ticketTitle">Wildlife Park</h2><span class="price" id="ticketPrice">$14</span></div>
+            <div class="admission" id="ticketAdmission">General Admission</div>
+            <div class="rule"></div>
+            <div class="details">• Valid for one entry to the zoo<br>• A wild adventure awaits you!</div>
+            <div class="valid" id="ticketDate">Valid 12/31/2026</div>
+            <div class="details" style="color:#27916a">Keep this ticket for a day full of wonder.</div>
+            <div class="barcode"></div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="control-group"><span class="control-label">Style</span>
+          <button class="choice active" data-style="Cute">☺ Cute</button><button class="choice" data-style="Retro">▧ Retro</button><button class="choice" data-style="Dream">✧ Dream</button>
+        </div>
+        <div class="divider"></div>
+        <div class="control-group"><span class="control-label">Colors</span>
+          <button class="swatch active" data-color="0" style="background:#b8e94c" aria-label="Lime"></button>
+          <button class="swatch" data-color="1" style="background:#65e7e9" aria-label="Aqua"></button>
+          <button class="swatch" data-color="2" style="background:#79b9ff" aria-label="Blue"></button>
+          <button class="swatch" data-color="3" style="background:#ffca48" aria-label="Gold"></button>
+          <button class="swatch" data-color="4" style="background:#ff8f9b" aria-label="Pink"></button>
+        </div>
+        <button class="pill" id="download">Download ticket ↓</button>
+      </div>
+      <p style="font-size:12px;color:#8bbdb7;margin:12px 4px">Preview updates instantly. Upload a photo to personalize the artwork, then download your ticket.</p>
+    </div>
+  </section>
+  <section class="steps" id="how">
+    <div class="step"><div class="num">1</div><div><h3>Upload a photo</h3><p>Choose a photo from your device. It can be a selfie, a pet, or anything you love.</p></div></div>
+    <div class="step"><div class="num">2</div><div><h3>Choose your world</h3><p>Pick a playful style and color palette. Your ticket updates as you customize it.</p></div></div>
+    <div class="step"><div class="num">3</div><div><h3>Download your ticket</h3><p>Save your one-of-a-kind ticket and share it with your friends or print it out.</p></div></div>
+  </section>
+</main>
+<footer id="about">Made for the wild at heart · Ticket Zoo</footer>
+<div class="toast" id="toast">Your ticket is ready!</div>
+<script>
+const $=id=>document.getElementById(id);
+let uploadedImage=null, selectedStyle='Cute';
+const palettes=[
+ ['#b8e94c','#65e7e9','#79b9ff','#ffca48','#ff8f9b'],
+ ['#65e7e9','#b8e94c','#ffca48','#ff8f9b','#79b9ff'],
+ ['#79b9ff','#b8e94c','#65e7e9','#ff8f9b','#ffca48'],
+ ['#ffca48','#ff8f9b','#b8e94c','#65e7e9','#79b9ff'],
+ ['#ff8f9b','#79b9ff','#65e7e9','#ffca48','#b8e94c']
+];
+let chosenColor=0;
+const emojis={Cute:'🐘',Retro:'🦖',Dream:'🦄'};
+function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2300)}
+function loadFile(file){
+ if(!file||!file.type.startsWith('image/')){showToast('Please choose an image file.');return}
+ const reader=new FileReader();reader.onload=e=>{
+  const img=new Image();img.onload=()=>{uploadedImage=img;const art=$('ticketArt');let old=art.querySelector('img');if(old)old.remove();img.className='uploaded';img.style.cssText='position:absolute;width:100%;height:100%;object-fit:cover;z-index:0;';art.prepend(img);$('emoji').style.display='none';showToast('Photo added to your ticket!')};img.src=e.target.result;
+ };reader.readAsDataURL(file)
+}
+$('drop').addEventListener('click',()=>$('file').click());
+$('file').addEventListener('change',e=>loadFile(e.target.files[0]));
+$('drop').addEventListener('dragover',e=>{e.preventDefault();$('drop').classList.add('drag')});
+$('drop').addEventListener('dragleave',()=>$('drop').classList.remove('drag'));
+$('drop').addEventListener('drop',e=>{e.preventDefault();$('drop').classList.remove('drag');loadFile(e.dataTransfer.files[0])});
+$('titleInput').addEventListener('input',e=>$('ticketTitle').textContent=e.target.value||'Wildlife Park');
+$('priceInput').addEventListener('input',e=>$('ticketPrice').textContent=e.target.value||'$14');
+$('admissionInput').addEventListener('change',e=>$('ticketAdmission').textContent=e.target.value);
+$('dateInput').addEventListener('change',e=>{if(e.target.value){const d=new Date(e.target.value+'T12:00:00');$('ticketDate').textContent='Valid '+d.toLocaleDateString('en-US')}})
+document.querySelectorAll('[data-style]').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('[data-style]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selectedStyle=btn.dataset.style;$('styleLabel').textContent='TICKET ZOO · '+selectedStyle.toUpperCase();$('emoji').textContent=emojis[selectedStyle];
+ const art=$('ticketArt');if(selectedStyle==='Retro'){art.style.filter='saturate(.78) sepia(.2)';$('ticket').style.borderRadius='2px'}else if(selectedStyle==='Dream'){art.style.filter='saturate(1.3) hue-rotate(15deg)';$('ticket').style.borderRadius='18px'}else{art.style.filter='none';$('ticket').style.borderRadius='8px'}
+}));
+document.querySelectorAll('[data-color]').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('[data-color]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');chosenColor=+btn.dataset.color;
+ const c=palettes[chosenColor];$('ticketArt').style.background=`linear-gradient(135deg,${c[0]},${c[1]} 55%,${c[2]})`;$('styleLabel').style.background=c[0];
+}));
+$('download').addEventListener('click',()=>{
+ const W=1500,H=700,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const ctx=canvas.getContext('2d');
+ const leftW=950,rightW=550;ctx.fillStyle='#fff8e9';ctx.fillRect(0,0,W,H);
+ const c=palettes[chosenColor];ctx.save();ctx.beginPath();ctx.rect(0,0,leftW,H);ctx.clip();
+ const grad=ctx.createLinearGradient(0,0,leftW,H);grad.addColorStop(0,c[0]);grad.addColorStop(.55,c[1]);grad.addColorStop(1,c[2]);ctx.fillStyle=grad;ctx.fillRect(0,0,leftW,H);
+ // decorative background foliage
+ for(let i=0;i<28;i++){ctx.save();ctx.translate((i*137)%leftW,(i*83)%H);ctx.rotate((i%7)*.4);ctx.fillStyle=i%2?'rgba(0,92,79,.25)':'rgba(255,255,255,.25)';ctx.beginPath();ctx.ellipse(0,0,18+(i%5)*8,50+(i%3)*10,0,0,Math.PI*2);ctx.fill();ctx.restore()}
+ if(uploadedImage){const iw=uploadedImage.width,ih=uploadedImage.height,scale=Math.max(leftW/iw,H/ih),sw=iw*scale,sh=ih*scale;ctx.globalAlpha=.88;ctx.drawImage(uploadedImage,(leftW-sw)/2,(H-sh)/2,sw,sh);ctx.globalAlpha=1;ctx.fillStyle='rgba(0,60,57,.12)';ctx.fillRect(0,0,leftW,H)}
+ else{ctx.font='360px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(emojis[selectedStyle],leftW/2,H/2+25)}
+ ctx.fillStyle=c[0];roundRect(ctx,35,30,340,58,29);ctx.fill();ctx.fillStyle='#143d36';ctx.font='bold 25px sans-serif';ctx.textAlign='left';ctx.fillText('TICKET ZOO · '+selectedStyle.toUpperCase(),58,68);
+ ctx.restore();
+ // perforated edge
+ ctx.strokeStyle='#fff8e9';ctx.lineWidth=12;ctx.setLineDash([14,18]);ctx.beginPath();ctx.moveTo(leftW,10);ctx.lineTo(leftW,H-10);ctx.stroke();ctx.setLineDash([]);
+ const title=$('titleInput').value||'Wildlife Park',price=$('priceInput').value||'$14',adm=$('admissionInput').value;
+ ctx.fillStyle='#153d36';ctx.textAlign='left';ctx.font='bold 58px sans-serif';wrapText(ctx,title,leftW+55,100,rightW-100,65);
+ ctx.fillStyle='#16824e';ctx.font='bold 54px sans-serif';ctx.textAlign='right';ctx.fillText(price,W-50,100);
+ ctx.textAlign='left';ctx.fillStyle='#289a68';ctx.font='bold 34px sans-serif';ctx.fillText(adm,leftW+55,205);
+ ctx.strokeStyle='#c6c4b8';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(leftW+55,235);ctx.lineTo(W-55,235);ctx.stroke();
+ ctx.fillStyle='#4d625b';ctx.font='24px sans-serif';ctx.fillText('• Valid for one entry to the zoo',leftW+55,290);ctx.fillText('• A wild adventure awaits you!',leftW+55,330);
+ ctx.fillStyle='#153d36';ctx.font='36px sans-serif';ctx.fillText('Valid '+$('ticketDate').textContent.replace('Valid ',''),leftW+55,415);
+ ctx.fillStyle='#27916a';ctx.font='21px sans-serif';ctx.fillText('Keep this ticket for a day full of wonder.',leftW+55,480);
+ // barcode
+ let x=leftW+55;for(let i=0;i<95;i++){let bw=[2,4,6,3,8][(i*7+i%3)%5];ctx.fillStyle='#183e37';ctx.fillRect(x,560,bw,90);x+=bw+((i%3)+2);if(x>W-55)break}
+ // outer edge + punch holes
+ ctx.strokeStyle='#fff8e9';ctx.lineWidth=10;ctx.strokeRect(5,5,W-10,H-10);ctx.fillStyle='#003c39';for(let y=22;y<H;y+=36){ctx.beginPath();ctx.arc(leftW,y,10,0,Math.PI*2);ctx.fill()}
+ canvas.toBlob(blob=>{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='my-ticket-zoo.png';a.click();URL.revokeObjectURL(url);showToast('Ticket downloaded!')},'image/png');
+});
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){let words=text.split(' '),line='';for(let n=0;n<words.length;n++){let test=line+words[n]+' ';if(ctx.measureText(test).width>maxWidth&&n>0){ctx.fillText(line,x,y);line=words[n]+' ';y+=lineHeight}else line=test}ctx.fillText(line,x,y)}
+</script>
+</body>
+</html>
